@@ -7,7 +7,9 @@
 //
 
 #import "AppDelegate.h"
-
+#import "HomeViewController.h"
+#import "LoginViewController.h"
+#import "PasswordHelper.h"
 @interface AppDelegate ()
 
 @end
@@ -16,8 +18,30 @@
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    // Override point for customization after application launch.
+    self.window = [[UIWindow alloc]initWithFrame:[UIScreen mainScreen].bounds];
+    self.window.backgroundColor = [UIColor whiteColor];
+    [self.window makeKeyAndVisible];
+    UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    BOOL isFirstTime = [self checkIsFirstTimeLogin];
+    NSLog(@"%d",isFirstTime);
+    if (isFirstTime) {
+        self.window.rootViewController = [sb instantiateViewControllerWithIdentifier:@"HomeViewController"];
+    }else{
+        self.window.rootViewController = [sb instantiateViewControllerWithIdentifier:@"LoginViewController"];
+    }
     return YES;
+}
+
+-(BOOL)checkIsFirstTimeLogin{
+    NSUserDefaults *user = [NSUserDefaults standardUserDefaults];
+    BOOL isFirstTime = [user boolForKey:@"isFirstTime"];
+    if (!isFirstTime) {
+        [user setBool:YES forKey:@"isFirstTime"];
+        [user synchronize];
+        isFirstTime = NO;
+    }
+//    NSLog(@"%d",isFirstTime);
+    return isFirstTime;
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {
